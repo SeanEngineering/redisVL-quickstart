@@ -6,33 +6,16 @@ The all-MiniLM-L6-v2 model will be used to generate embeddings via the SentenceT
 
 This repo has been designed for Mac so alter the commands accordingly for Windows and Linux.
 
-## How it works
-flowchart TD
-    Client[Client<br/>curl / frontend] -->|HTTP POST /documents| API[FastAPI App<br/>Uvicorn]
-
-    Client -->|HTTP POST /search| API
-
-    API -->|startup| IndexInit[Create / Verify RedisVL Index]
-
-    IndexInit --> Redis[(Redis Stack<br/>RediSearch + Vector)]
-
-    API -->|embed(text)| Embed[Embedding Function<br/>(e.g. sentence-transformer)]
-
-    Embed -->|vector| API
-
-    API -->|index.load(record)| Redis
-
-    Redis -->|HSET + FT Index| Redis
-
-    API -->|vector query| Redis
-
-    Redis -->|Search results<br/>(doc keys + scores)| API
-
-    API -->|HGETALL (optional)| Redis
-
-    API -->|JSON response| Client
+Below is a diagram of how the data flows.
+![Flow diagram](image.png)
 
 ## Setup Python App
+
+Setup virtual environment
+```shell
+  python3 -m venv .venv
+```
+Activate the virtual environment
 ```shell
 source ./.venv/bin/activate
 ```
@@ -93,7 +76,7 @@ Kill the process using
 
 <ul>
   <li><a href="https://docs.redisvl.com/en/latest/overview/index.html" target="_blank">RedisVL</a></li>
-  <li><a href="https://www.sbert.net/" target="_blank">SentenceTransformer</a></li>
+  <li><a href="https://www.sbert.net/docs/sentence_transformer/pretrained_models.html" target="_blank">SentenceTransformer models</a></li>
   <li><a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a></li>
   <li><a href="https://uvicorn.dev/" target="_blank">uvicorn</a></li>
 </ul>

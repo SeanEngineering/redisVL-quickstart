@@ -4,7 +4,8 @@ from redisvl.index import SearchIndex
 
 redis_client = Redis(host="localhost", port=6379, decode_responses=True)
 
-
+# The below is the schema definition for the model.
+# Simply add a record under "fields" to add an additional field. Make sure this is accounted for in the /document endpoint.
 schema = IndexSchema.from_dict({
     "index": {
         "name": "docs",
