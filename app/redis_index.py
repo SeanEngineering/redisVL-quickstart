@@ -27,8 +27,36 @@ schema = IndexSchema.from_dict({
     ]
 })
 
+# Schema used for images
+image_schema = IndexSchema.from_dict({
+    "index": {
+        "name": "images",
+        "prefix": "img",
+        "storage_type": "hash"
+    },
+    "fields": [
+        {
+            "name": "content",
+            "type": "text"
+        },
+        {
+            "name": "embedding",
+            "type": "vector",
+            "attrs": {
+                "algorithm": "HNSW",
+                "dims": 512,
+                "distance_metric": "cosine",
+                "type": "FLOAT32"
+            }
+        }
+    ]
+})
+
 index = SearchIndex(schema, redis_client)
+
+image_index = SearchIndex(image_schema, redis_client)
 
 
 def init_index():
     index.create(overwrite=False)
+    image_index.create(overwrite=False)
