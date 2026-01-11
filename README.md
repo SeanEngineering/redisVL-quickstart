@@ -8,7 +8,6 @@ This repo has been designed for Mac so alter the commands accordingly for Window
 
 Below is a diagram of how the data flows.
 ![Flow diagram](image.png)
-
 ## Setup Python App
 
 Setup virtual environment
@@ -24,6 +23,8 @@ Download the python packages
 ```shell
   pip install -r requirements.txt
 ```
+
+# Text Based Semantic Search
 
 ## Setup and Run Redis via Docker
 Run a Redis instance locally using the following command
