@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from app.redis_index import index, init_index, image_index
 from redisvl.query import VectorQuery
 from app.embeddings import embed, embed_image, embed_text
@@ -9,6 +10,14 @@ from PIL import Image
 import uuid
 
 app = FastAPI(title="RedisVL Semantic Search")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
@@ -59,17 +68,19 @@ async def add_image(file: UploadFile = File(...)):
     image_bytes = await file.read()
     img = Image.open(BytesIO(image_bytes)).convert("RGB")
 
-    embedding_vector = embed_image(img)
+    embedding = embed_image(img)
+
+    vec = np.array(embedding, dtype=np.float32).tobytes()
 
     record = {
         "_id": str(uuid.uuid4()),
         "content": file.filename,
-        "embedding": embedding_vector
+        "embedding": vec
     }
 
     image_index.load([record])
 
-    return {"status": "ok", "id": record["_id"]}
+    return {"status": "ok"}
 
 
 @app.post("/search-images")
